@@ -92,7 +92,47 @@ ___
   
 #### 5. Extract the weights of the generator  
   >  `python get_generator_ckpt.py --checkpoint_dir  ../checkpoint/AnimeGANv2_Shinkai_lsgan_300_300_1_2_10_1  --style_name Shinkai`  
-  
+
+## 如何使用与预训练权重 (How to Use and Pre-trained Weights)
+
+### 如何使用
+
+#### 1. 推理 (处理图片)
+  > `python test.py  --checkpoint_dir  checkpoint/generator_Hayao_weight  --test_dir dataset/test/HR_photo --save_dir Hayao/HR_photo`
+
+#### 2. 转换视频为动漫风格
+  > `python video2anime.py  --video video/input/お花見.mp4  --checkpoint_dir  checkpoint/generator_Hayao_weight  --output video/output`
+
+#### 3. 训练模型
+##### 1. 下载 vgg19
+  > [vgg19.npy](https://github.com/TachibanaYoshino/AnimeGAN/releases/tag/vgg16%2F19.npy)
+
+##### 2. 下载训练/验证图片数据集
+  > [链接](https://github.com/TachibanaYoshino/AnimeGAN/releases/tag/dataset-1)
+
+##### 3. 图像边缘平滑处理
+  > `python edge_smooth.py --dataset Hayao --img_size 256`
+
+##### 4. 开始训练
+  >  `python train.py --dataset Hayao --epoch 101 --init_epoch 10`
+
+##### 5. 提取生成器权重
+  >  `python get_generator_ckpt.py --checkpoint_dir  ../checkpoint/AnimeGANv2_Shinkai_lsgan_300_300_1_2_10_1  --style_name Shinkai`
+
+### 关于预训练权重
+
+此框架提供了多种预训练的动漫风格权重，方便用户直接使用。
+
+**权重位置:**
+所有的预训练权重都存放在 `checkpoint/` 目录下。主要包含以下几种风格：
+*   `generator_Hayao_weight`: 宫崎骏风格 (例如：来自电影《起风了》)
+*   `generator_Paprika_weight`: 今敏风格 (例如：来自电影《红辣椒 Paprika》)
+*   `generator_Shinkai_weight`: 新海诚风格 (例如：来自电影《你的名字》、《天气之子》)
+
+当运行推理或视频转换脚本时，可以通过 `--checkpoint_dir` 参数指定使用这些预训练权重。例如，要使用宫崎骏风格的权重，可以设置 `--checkpoint_dir checkpoint/generator_Hayao_weight`。
+
+此外，在 `pb_and_onnx_model/` 目录下，还提供了部分模型的 `.pb` (TensorFlow Protocol Buffer) 和 `.onnx` (Open Neural Network Exchange) 格式的文件，例如 `Shinkai_53.onnx` 和 `Shinkai_53.pb`。这些格式通常用于模型部署。
+
 ____  
 ## Results  
 ![](https://github.com/TachibanaYoshino/AnimeGANv2/blob/master/AnimeGANv2.png)   
